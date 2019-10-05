@@ -2,12 +2,12 @@
   <div id="app">
     <h1>じゃんけんゲーム</h1>
     <ul class="nav">
-      <li><router-link to="/">ゲーム</router-link></li>
+      <li><router-link to="/game">ゲーム</router-link></li>
       <li><router-link to="/score">スコア</router-link></li>
     </ul>
     <div class='inner'>
       <transition name="fade">
-        <router-view scores="scores"></router-view>
+        <router-view :scores="scores" @updateScore="updateScore" />
       </transition>
     </div>
   </div>
@@ -25,13 +25,25 @@ export default {
     }
   },
 
-  methods: {
+  created() {
+    this.setScores();
+  },
 
+  methods: {
+    setScores() {
+      const savedScores = localStorage.getItem('janken');
+      this.scores = savedScores ? savedScores.split(',') : [];
+    },
+
+    updateScore(score) {
+      this.scores.push(score);
+      localStorage.setItem('janken', this.scores);
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 body {
 	font-family: "Nico Moji", "ヒラギノ丸ゴPro W3", "Hiragino Maru Gothic Pro", "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", Arial, Helvetica, Verdana, sans-serif;
 }
@@ -43,10 +55,11 @@ h1 {
 }
 
 .inner {
-    width: 300px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
+  position: relative;
+  width: 300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 .nav {
@@ -65,14 +78,31 @@ h1 {
       text-decoration: none;
       background: #00e8ee;
       color: #333;
+
+      &.router-link-active {
+        background: #2cb1ee;
+        color: #fff;
+      }
     }
   }
 }
 
-// .fade-enter-active, .fade-leave-active {
-//   transition: opacity .5s;
-// }
-// .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-//   opacity: 0;
-// }
+.fade-leave-active {
+  position:absolute;
+  left:0;
+  top:0;
+  transition:opacity .3s!important;
+}
+
+.fade-enter-active {
+  position:absolute;
+  left:0;
+  top:0;
+  transition:opacity .2s!important;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity:0;
+}
 </style>

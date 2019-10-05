@@ -8,7 +8,7 @@ import NotFound from './components/NotFound.vue'
 Vue.use(VueRouter);
 
 const routes = [
-  { path: '/', component: Game },
+  { path: '/game', component: Game },
   { path: '/score', component: Score },
   { path: '*', component: NotFound }
 ];

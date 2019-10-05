@@ -1,19 +1,25 @@
 <template>
   <div class="game">
-    <div v-if="isShowResult" class="result">
+    <div v-if="isShowResult" class="result" v-cloak>
       <h2>{{ resultMessage }}</h2>
       <div><button @click="start">もう一度</button></div>
     </div>
     <div class='imgArea'><img :src='src' alt=''></div>
     <ul>
       <li>
-        <button @click="onSelected" class="button" type="button" value="0" :disabled="isButtonDisabled">グー</button>
+        <button @click="onSelected" class="button" type="button" value="0" :disabled="isButtonDisabled">
+          <img :src='imgList[0]' alt=''>
+        </button>
       </li>
       <li>
-        <button @click="onSelected" class="button" type="button" value="1" :disabled="isButtonDisabled">チョキ</button>
+        <button @click="onSelected" class="button" type="button" value="1" :disabled="isButtonDisabled">
+          <img :src='imgList[1]' alt=''>
+        </button>
       </li>
       <li>
-        <button @click="onSelected" class="button" type="button" value="2" :disabled="isButtonDisabled">パー</button>
+        <button @click="onSelected" class="button" type="button" value="2" :disabled="isButtonDisabled">
+          <img :src='imgList[2]' alt=''>
+        </button>
       </li>
     </ul>
   </div>
@@ -23,7 +29,9 @@
 export default {
   name: 'Game',
   props: {
-
+    scores: {
+      type: Array
+    }
   },
   data() {
     return {
@@ -75,7 +83,7 @@ export default {
     onSelected(e) {
       clearInterval(this.timer);
 
-      this.selectedButton = e.target;
+      this.selectedButton = e.target.tagName === 'IMG' ? e.target.parentNode : e.target;
       this.selectedButton.classList.add('is-selected');
 
       this.isButtonDisabled = true;
@@ -93,11 +101,8 @@ export default {
         this.resultMessage = '負け😭';
       }
 
-      let results = localStorage.getItem('janken');
-      results = results ? results.split(',') : [];
-
-      results.push(this.resultMessage);
-      localStorage.setItem('janken', results.toString());
+      // resultMessageを親のscores arrayに追加
+      this.$emit('updateScore', this.resultMessage);
     },
 
     judgeJanken(yourNum, compNum) {
@@ -186,6 +191,10 @@ li button {
   padding: 10px;
   font-family: inherit;
   background: #aceee9;
+  height: 85px;
+  img {
+    width: 60px;
+  }
 
   &.is-selected[disabled] {
     background: #7ad8ee;
@@ -203,5 +212,9 @@ li {
     background: #aceee9;
     pointer-events: none;
   }
+}
+
+[v-cloak] {
+  display: none;
 }
 </style>

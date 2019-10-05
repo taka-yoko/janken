@@ -1,5 +1,11 @@
 # janken
 
+## Description
+
+https://www.actzero.jp/developer/report-19774.html
+上記サイトを参考にじゃんけんゲームをvue.jsで実装。
+実装は大幅に変更している。
+
 ## Project setup
 ```
 npm install
